@@ -3,29 +3,6 @@
  */
 
 /**
- * @typedef {Object} Database
- * @property {Object} public
- * @property {Object} public.Tables
- * @property {Object} public.Tables.consumer_blocks
- * @property {Object} public.Tables.consumer_blocks.Row
- * @property {string} public.Tables.consumer_blocks.Row.consumer_id
- * @property {string} public.Tables.consumer_blocks.Row.created_at
- * @property {string} public.Tables.consumer_blocks.Row.id
- * @property {string} public.Tables.consumer_blocks.Row.musician_id
- * @property {Object} public.Tables.consumer_blocks.Insert
- * @property {string} public.Tables.consumer_blocks.Insert.consumer_id
- * @property {string} [public.Tables.consumer_blocks.Insert.created_at]
- * @property {string} [public.Tables.consumer_blocks.Insert.id]
- * @property {string} public.Tables.consumer_blocks.Insert.musician_id
- * @property {Object} public.Tables.consumer_blocks.Update
- * @property {string} [public.Tables.consumer_blocks.Update.consumer_id]
- * @property {string} [public.Tables.consumer_blocks.Update.created_at]
- * @property {string} [public.Tables.consumer_blocks.Update.id]
- * @property {string} [public.Tables.consumer_blocks.Update.musician_id]
- * @property {Array} public.Tables.consumer_blocks.Relationships
- */
-
-/**
  * @typedef {Object} ConsumerBlocks
  * @property {string} consumer_id
  * @property {string} created_at
@@ -126,12 +103,22 @@
  */
 
 /**
- * @typedef {Object} DatabaseSchema
- * @property {Object} Tables
- * @property {Object} Views
- * @property {Object} Functions
- * @property {Object} Enums
- * @property {Object} CompositeTypes
+ * @typedef {Object} Database
+ * @property {Object} public
+ * @property {Object} public.Tables
+ * @property {ConsumerBlocks} public.Tables.consumer_blocks
+ * @property {ConsumerCheckins} public.Tables.consumer_checkins
+ * @property {ConsumerFollows} public.Tables.consumer_follows
+ * @property {ConsumerReviews} public.Tables.consumer_reviews
+ * @property {ConsumerTips} public.Tables.consumer_tips
+ * @property {Consumers} public.Tables.consumers
+ * @property {MusicianEarnings} public.Tables.musician_earnings
+ * @property {Musicians} public.Tables.musicians
+ * @property {Profiles} public.Tables.profiles
+ * @property {Object} public.Views
+ * @property {Object} public.Functions
+ * @property {Object} public.Enums
+ * @property {Object} public.CompositeTypes
  */
 
 /**
@@ -237,3 +224,214 @@ export function queryRecords(tableName, options = {}) {
     operation: 'select'
   };
 }
+
+/**
+ * Helper function to get consumer data
+ * @param {string} consumerId - Consumer ID
+ * @returns {Promise<Object>} Consumer data
+ */
+export async function getConsumer(consumerId) {
+  try {
+    // This would typically use your Supabase client
+    return {
+      id: consumerId,
+      table: 'consumers',
+      operation: 'select'
+    };
+  } catch (error) {
+    console.error('Error getting consumer:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to get musician data
+ * @param {string} musicianId - Musician ID
+ * @returns {Promise<Object>} Musician data
+ */
+export async function getMusician(musicianId) {
+  try {
+    return {
+      id: musicianId,
+      table: 'musicians',
+      operation: 'select'
+    };
+  } catch (error) {
+    console.error('Error getting musician:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to create a consumer checkin
+ * @param {Object} checkinData - Checkin data
+ * @returns {Promise<Object>} Checkin creation result
+ */
+export async function createConsumerCheckin(checkinData) {
+  try {
+    return {
+      table: 'consumer_checkins',
+      data: checkinData,
+      operation: 'insert'
+    };
+  } catch (error) {
+    console.error('Error creating checkin:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to create a consumer review
+ * @param {Object} reviewData - Review data
+ * @returns {Promise<Object>} Review creation result
+ */
+export async function createConsumerReview(reviewData) {
+  try {
+    return {
+      table: 'consumer_reviews',
+      data: reviewData,
+      operation: 'insert'
+    };
+  } catch (error) {
+    console.error('Error creating review:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to create a consumer tip
+ * @param {Object} tipData - Tip data
+ * @returns {Promise<Object>} Tip creation result
+ */
+export async function createConsumerTip(tipData) {
+  try {
+    return {
+      table: 'consumer_tips',
+      data: tipData,
+      operation: 'insert'
+    };
+  } catch (error) {
+    console.error('Error creating tip:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to get musician earnings
+ * @param {string} musicianId - Musician ID
+ * @returns {Promise<Object>} Earnings data
+ */
+export async function getMusicianEarnings(musicianId) {
+  try {
+    return {
+      table: 'musician_earnings',
+      where: { musician_id: musicianId },
+      operation: 'select'
+    };
+  } catch (error) {
+    console.error('Error getting earnings:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to follow a musician
+ * @param {string} consumerId - Consumer ID
+ * @param {string} musicianId - Musician ID
+ * @returns {Promise<Object>} Follow creation result
+ */
+export async function followMusician(consumerId, musicianId) {
+  try {
+    return {
+      table: 'consumer_follows',
+      data: {
+        consumer_id: consumerId,
+        musician_id: musicianId
+      },
+      operation: 'insert'
+    };
+  } catch (error) {
+    console.error('Error following musician:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to block a musician
+ * @param {string} consumerId - Consumer ID
+ * @param {string} musicianId - Musician ID
+ * @returns {Promise<Object>} Block creation result
+ */
+export async function blockMusician(consumerId, musicianId) {
+  try {
+    return {
+      table: 'consumer_blocks',
+      data: {
+        consumer_id: consumerId,
+        musician_id: musicianId
+      },
+      operation: 'insert'
+    };
+  } catch (error) {
+    console.error('Error blocking musician:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to get profile data
+ * @param {string} profileId - Profile ID
+ * @returns {Promise<Object>} Profile data
+ */
+export async function getProfile(profileId) {
+  try {
+    return {
+      id: profileId,
+      table: 'profiles',
+      operation: 'select'
+    };
+  } catch (error) {
+    console.error('Error getting profile:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to update profile
+ * @param {string} profileId - Profile ID
+ * @param {Object} updateData - Data to update
+ * @returns {Promise<Object>} Profile update result
+ */
+export async function updateProfile(profileId, updateData) {
+  try {
+    return {
+      table: 'profiles',
+      where: { id: profileId },
+      data: updateData,
+      operation: 'update'
+    };
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    return null;
+  }
+}
+
+// Export all helper functions
+export default {
+  getTable,
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  queryRecords,
+  getConsumer,
+  getMusician,
+  createConsumerCheckin,
+  createConsumerReview,
+  createConsumerTip,
+  getMusicianEarnings,
+  followMusician,
+  blockMusician,
+  getProfile,
+  updateProfile,
+  Constants
+};
